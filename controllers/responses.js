@@ -1,19 +1,7 @@
-const { ObjectId, BSON } = require("mongodb");
+const { BSON } = require("mongodb");
+const { onResponseSubmitted } = require("../utils/websockets");
 
 const getDb = require("../utils/database").getDb;
-
-exports.getLastResponse = async (req, res, next) => {
-  const response = await getDb()
-    .db()
-    .collection("responses")
-    .find({})
-    .sort({
-      createdAt: -1,
-    })
-    .toArray();
-
-  res.json(response[0].response === "agree");
-};
 
 exports.addResponse = async (req, res, next) => {
   // check if it's unique & update status on settlements collections
@@ -52,6 +40,8 @@ exports.addResponse = async (req, res, next) => {
           response: Number(req.body.response) ? "agree" : "dispute",
           createdAt: new Date(),
         });
+
+      onResponseSubmitted(response);
 
       res.status(201).json(response);
     } else {

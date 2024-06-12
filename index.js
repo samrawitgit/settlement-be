@@ -6,6 +6,8 @@ const initDb = require("./utils/database").initDb;
 const settlementsRoutes = require("./routes/settlements");
 const responsesRoutes = require("./routes/responses");
 
+const wss = require("./utils/websockets");
+
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
